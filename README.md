@@ -42,7 +42,7 @@ Scores are calculated by averaging seven adjusted item responses per dimension, 
 ((mean - 1) / 4) × 100
 ```
 
-Reverse-scored items are first converted using `6 - response`. Every item within a dimension has equal weight, so each contributes approximately 14.29% of that dimension score. Equal weighting is used to keep the tool transparent and avoid hidden algorithmic weighting. Future peer-reviewed validation should test reliability, factor structure, sensitivity to change, and whether different empirical weights are justified.
+Reverse-scored items are first converted using `6 - response`. Every item within a dimension has equal weight, so each contributes approximately 14.29% of that dimension score. Equal weighting is used to keep the tool transparent, reproducible, and free from hidden algorithmic weighting.
 
 ## Research basis
 

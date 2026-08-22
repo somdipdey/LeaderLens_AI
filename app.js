@@ -150,7 +150,7 @@ const scoringMethod = {
   reverseScoring: 'For reverse-scored items, adjusted score = 6 - response.',
   dimensionFormula: 'dimensionScore0to100 = round(((meanAdjustedItemScore - 1) / 4) * 100)',
   interpretationBoundary: 'Scores are reflective indicators for self-development, not diagnostic categories or validated selection scores.',
-  validationNote: 'The 49-item structure is original and framework-informed; future peer-reviewed validation should test reliability, factor structure, sensitivity to change, and whether different empirical weights are justified.'
+  transparencyNote: 'The 49-item structure is original and framework-informed. Equal weighting keeps the scoring method visible and reproducible for self-reflection and research reporting.'
 };
 
 const darkAdvice = {
@@ -357,17 +357,21 @@ function drawBarChart(canvasId, title, labels, scores, options = {}) {
   ctx.fillStyle = '#172033';
   ctx.fillText(title, 28, 36);
 
-  const left = 190, right = 52, top = 72, rowH = 58, barH = 22;
+  // Reserve enough right-side space for full score labels such as "100/100".
+  const left = 190, right = 104, top = 72, rowH = 58, barH = 22;
   const barW = width - left - right;
+  const scoreX = width - 18;
 
   ctx.font = '500 15px Inter, Arial, sans-serif';
   ctx.fillStyle = '#5b6678';
+  ctx.textAlign = 'center';
   for (let i = 0; i <= 4; i++) {
     const x = left + (barW * i / 4);
     ctx.strokeStyle = '#e2e8f0';
     ctx.beginPath(); ctx.moveTo(x, top - 18); ctx.lineTo(x, height - 30); ctx.stroke();
-    ctx.fillText(String(i * 25), x - 8, height - 12);
+    ctx.fillText(String(i * 25), x, height - 12);
   }
+  ctx.textAlign = 'left';
 
   labels.forEach((label, i) => {
     const y = top + i * rowH;
@@ -391,7 +395,9 @@ function drawBarChart(canvasId, title, labels, scores, options = {}) {
 
     ctx.fillStyle = '#172033';
     ctx.font = '700 15px Inter, Arial, sans-serif';
-    ctx.fillText(`${pct}/100`, left + barW + 10, y + 23);
+    ctx.textAlign = 'right';
+    ctx.fillText(`${pct}/100`, scoreX, y + 23);
+    ctx.textAlign = 'left';
   });
 }
 
