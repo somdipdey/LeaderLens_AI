@@ -124,7 +124,7 @@
 
     <section id="results" class="panel" tabindex="0">
       <h2>Results &amp; AI-assisted development plan</h2>
-      <p>Your score dashboard will appear after you complete the self-assessment. Use the prompt builder to ask a GenAI assistant for a safe, practical, non-diagnostic improvement plan.</p>
+      <p>Your score dashboard will appear after you complete the self-assessment. Use the prompt builder to ask a GenAI assistant for a safe, practical, non-diagnostic improvement plan. The generated prompt includes a context block explaining LeaderLens AI, the seven dimensions, scoring method, interpretation boundaries, and safe-use principles so the AI assistant does not need prior knowledge of the tool.</p>
 
       <div id="resultsEmpty" class="notice warning">No assessment results are saved yet. Complete the self-assessment first.</div>
 
@@ -177,9 +177,9 @@
 
         <label for="aiPrompt" class="prompt-label">Structured GenAI prompt</label>
         <div class="notice info compact-note">
-          <strong>How to use this prompt:</strong> Copy the generated structured GenAI prompt into your favourite GenAI tool to receive suggestions for self-reflection, leadership development, and practical 2–4 week behaviour improvement. The AI launch buttons below copy the prompt automatically before opening the chosen tool; paste it into the chat box when the new page opens.
+          <strong>How to use this prompt:</strong> Copy the generated structured GenAI prompt into your favourite GenAI tool to receive suggestions for self-reflection, leadership development, and practical 2–4 week behaviour improvement. The prompt includes a built-in explanation of LeaderLens AI, the trait/capacity meanings, the scoring method, and safety boundaries so ChatGPT, Copilot, Gemini, Claude, or another assistant can respond with appropriate context. The AI launch buttons below copy the prompt automatically before opening the chosen tool; paste it into the chat box when the new page opens.
         </div>
-        <textarea id="aiPrompt" class="prompt-box" rows="18" readonly></textarea>
+        <textarea id="aiPrompt" class="prompt-box" rows="26" readonly></textarea>
         <div class="action-bar">
           <button id="copyPromptBtn" class="primary">Copy prompt</button>
           <button id="openChatGPTBtn" class="secondary">Open ChatGPT</button>

@@ -460,7 +460,55 @@ function buildAIPrompt() {
     return `- ${dim}: ${s.percent}/100 (${s.band}). Development focus: ${lightAdvice[dim]}`;
   }).join('\n');
 
-  return `You are helping me reflect on my workplace behaviour and leadership style. Please act as a cautious, ethical, non-clinical development coach.\n\nImportant boundaries:\n- Do not diagnose me or label me as a narcissist, Machiavellian, psychopath, sadist, or unethical leader.\n- Treat these scores as self-reflection signals, not clinical or objective truth.\n- Prioritise psychological safety, workplace ethics, dignity, and low-risk behaviour experiments.\n- Do not recommend confrontation, retaliation, manipulation, surveillance, or anything that could breach workplace policy.\n- If a situation involves bullying, harassment, discrimination, self-harm, or risk to others, advise me to seek appropriate formal support rather than handling it alone.\n\nMy anonymous LeaderLens AI study code is ${getCode()} if I need to use it in a separate survey.\n\nMy Dark Tetrad reflective signals are:\n${darkLines}\n\nMy light / ethical leadership capacities are:\n${lightLines}\n\nScoring note: each trait/capacity score is calculated from seven equally weighted items, converted to a 0–100 reflective score. Please interpret cautiously and developmentally.\n\nPlease provide:\n1. A balanced interpretation of what this profile might suggest about my leadership style, biases, and workplace triggers.\n2. The top 3 behavioural risks I should monitor, written in non-stigmatising language.\n3. The top 3 strengths or protective capacities I can build on.\n4. A practical 2–4 week improvement plan with weekly micro-experiments, reflection questions, and observable workplace behaviours.\n5. Short scripts for seeking feedback, pausing before reactive decisions, giving credit, and responding ethically to conflict.\n6. A final reminder about interpreting these results cautiously and respecting others’ privacy and dignity.`;
+  return `You are helping me interpret results from LeaderLens AI. Please do not assume you already know this tool. Use the context below as the basis for your interpretation and act as a cautious, ethical, non-clinical leadership development coach.
+
+LeaderLens AI context:
+- LeaderLens AI is a privacy-preserving, browser-based self-reflection and improvement tool for voluntary leadership development. It does not send responses to a server and is not a clinical, diagnostic, recruitment, performance-management, selection, ranking, or disciplinary tool.
+- The tool gives reflective scores for seven workplace-relevant dimensions: four Dark Tetrad reflective signals and three light / ethical leadership capacities.
+- Dark Tetrad reflective signals are non-clinical tendencies that may create interpersonal or ethical risk when unmanaged. In this tool:
+  • Narcissism concerns status-seeking, entitlement, admiration needs, image protection, self-focus, and difficulty receiving criticism.
+  • Machiavellianism concerns strategic manipulation, selective information sharing, cynical calculation, impression management, and using influence mainly for personal advantage.
+  • Psychopathy concerns impulsive risk-taking, lower emotional sensitivity, reduced remorse, rule-bending, bluntness, and weak consequence-checking.
+  • Sadism concerns enjoyment, satisfaction, or indifference around another person’s discomfort, humiliation, punishment, or social defeat.
+- Light / ethical leadership capacities are prosocial behaviours that can reduce interpersonal harm and strengthen trust. In this tool:
+  • Empathy concerns perspective-taking, emotional awareness, curiosity about others’ experiences, and attention to the human impact of decisions.
+  • Humility concerns accurate self-awareness, teachability, willingness to admit mistakes, openness to dissent, and appreciation of others’ contributions.
+  • Ethical Leadership concerns fairness, transparency, confidentiality, integrity, ethical role-modelling, and encouraging people to raise concerns safely.
+
+How to interpret the scores:
+- Scores are self-reported reflective indicators, not objective personality facts and not population-normed clinical results.
+- Each dimension is based on seven original framework-informed items answered on a 1–5 agreement scale. Some items are reverse-scored. The seven adjusted items are averaged and converted to a 0–100 score using: round(((meanAdjustedItemScore - 1) / 4) × 100). Each item has equal weight within its own dimension.
+- For dark traits, higher scores indicate stronger reflective signals to manage; they do not mean the person “is” narcissistic, Machiavellian, psychopathic, or sadistic. Use the language of tendencies, triggers, safeguards, and behaviour patterns.
+- For light / ethical leadership capacities, higher scores indicate self-reported strengths; lower scores indicate development priorities.
+- Banding used by the tool: dark scores below 34 = lower reflective signal, 34–66 = moderate reflective signal, 67–100 = elevated reflective signal. Light scores below 34 = development priority, 34–66 = emerging capacity, 67–100 = reported strength.
+- Mixed profiles are normal. A person may show both risk tendencies and ethical strengths, and expression depends on role, stress, incentives, power dynamics, organisational climate, and feedback quality.
+
+Important boundaries for your response:
+- Do not diagnose me or label me as a narcissist, Machiavellian, psychopath, sadist, or unethical leader.
+- Do not overclaim certainty. Treat these results as prompts for reflection, not proof of behaviour.
+- Prioritise psychological safety, workplace ethics, dignity, and low-risk behaviour experiments.
+- Do not recommend confrontation, retaliation, manipulation, surveillance, deception, disclosure of private scores, or anything that could breach workplace policy.
+- If a situation involves bullying, harassment, discrimination, self-harm, harm to others, serious misconduct, or legal/HR risk, advise me to seek appropriate formal support rather than handling it alone.
+- If you need more context, provide optional reflection questions rather than making strong assumptions.
+
+My anonymous LeaderLens AI study code is ${getCode()} if I need to use it in a separate survey.
+
+My Dark Tetrad reflective signals are:
+${darkLines}
+
+My light / ethical leadership capacities are:
+${lightLines}
+
+Scoring note: each trait/capacity score is calculated from seven equally weighted items, converted to a 0–100 reflective score. Please interpret cautiously and developmentally using the context above.
+
+Please provide:
+1. A balanced interpretation of what this profile might suggest about my leadership style, biases, workplace triggers, and context-sensitive risk points.
+2. The top 3 behavioural risks I should monitor, written in non-stigmatising language and linked to observable workplace behaviours rather than identity labels.
+3. The top 3 strengths or protective capacities I can build on, including how they may offset or regulate risk signals.
+4. A practical 2–4 week improvement plan with weekly micro-experiments, reflection questions, and observable workplace behaviours. Make the plan low-risk, ethical, and suitable for professional settings.
+5. Short scripts for seeking feedback, pausing before reactive decisions, giving credit, repairing harm, and responding ethically to conflict.
+6. Optional questions I should ask myself before applying any suggestion in my specific workplace context.
+7. A final reminder about interpreting these results cautiously and respecting others’ privacy and dignity.`;
 }
 
 function getFullSummary() {
@@ -479,7 +527,15 @@ function getFullSummary() {
     selfAssessment: assessment ? {
       timestamp: assessment.timestamp,
       scores: assessment.scores
-    } : null
+    } : null,
+    generatedPromptContext: {
+      includesToolContext: true,
+      includesTraitDefinitions: true,
+      includesScoringMethod: true,
+      includesScoreBanding: true,
+      includesSafetyBoundaries: true,
+      purpose: 'Provide sufficient context for external GenAI assistants that may not know LeaderLens AI.'
+    }
   };
 }
 

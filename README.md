@@ -10,7 +10,7 @@ LeaderLens AI helps individuals reflect on workplace behaviour and leadership st
 2. Complete a browser-side self-assessment of Dark Tetrad reflective signals and light / ethical leadership capacities.
 3. View two score dashboards: dark signals to manage and prosocial capacities to strengthen.
 4. Download the dark and light profile charts as PNG images for personal records or approved research/survey workflows.
-5. Copy a structured GenAI prompt into ChatGPT, Copilot, Gemini, Claude, or another preferred GenAI assistant.
+5. Copy a structured GenAI prompt into ChatGPT, Copilot, Gemini, Claude, or another preferred GenAI assistant. The prompt contains a built-in context pack explaining LeaderLens AI, the seven dimensions, the scoring method, score banding, and safe interpretation boundaries, so the assistant does not need prior knowledge of the tool.
 6. Use the AI output as a non-diagnostic, safety-oriented 2–4 week development plan.
 7. Export an anonymous local summary only if the user chooses to share it through an approved survey or research process.
 
@@ -43,6 +43,18 @@ Scores are calculated by averaging seven adjusted item responses per dimension, 
 ```
 
 Reverse-scored items are first converted using `6 - response`. Every item within a dimension has equal weight, so each contributes approximately 14.29% of that dimension score. Equal weighting is used to keep the tool transparent, reproducible, and free from hidden algorithmic weighting.
+
+## Structured GenAI prompt context
+
+The generated prompt is designed for use with external GenAI assistants that may not know LeaderLens AI. It therefore includes:
+
+- a concise explanation of what LeaderLens AI is and what it is not;
+- definitions of the four Dark Tetrad reflective signals and three light / ethical leadership capacities;
+- the scoring method, equal weighting approach, reverse-scoring rule, and score bands;
+- non-diagnostic interpretation boundaries;
+- safe-use constraints that discourage labelling, unsafe confrontation, retaliation, manipulation, surveillance, or workplace-policy breaches; and
+- instructions to generate context-sensitive behavioural risks, strengths, micro-experiments, feedback scripts, and reflective questions.
+
 
 ## Research basis
 
