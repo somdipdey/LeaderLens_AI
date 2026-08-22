@@ -6,9 +6,7 @@
 
 const STORAGE_KEYS = {
   code: 'leaderlens_participant_code',
-  pre: 'leaderlens_pre_survey',
-  assessment: 'leaderlens_assessment',
-  post: 'leaderlens_post_survey'
+  assessment: 'leaderlens_assessment'
 };
 
 const LIKERT = [
@@ -19,93 +17,122 @@ const LIKERT = [
   { value: 5, label: '5\nStrongly agree' }
 ];
 
-const baselineItems = [
-  { id: 'b1', text: 'I pause before responding to difficult workplace interactions.' },
-  { id: 'b2', text: 'I consider colleagues’ perspectives before judging their actions.' },
-  { id: 'b3', text: 'I ask for feedback when conflict or misunderstanding emerges.' },
-  { id: 'b4', text: 'I manage disagreement without personalising or escalating it.' },
-  { id: 'b5', text: 'I consider fairness before making decisions that affect others.' },
-  { id: 'b6', text: 'I acknowledge mistakes and apologise when appropriate.' },
-  { id: 'b7', text: 'I protect confidentiality when people share sensitive information.' },
-  { id: 'b8', text: 'I notice when status, recognition, or ego may be influencing my behaviour.' },
-  { id: 'b9', text: 'I avoid using information asymmetry to gain unfair advantage.' },
-  { id: 'b10', text: 'I respond appropriately when jokes, sarcasm, or comments risk humiliating others.' },
-  { id: 'b11', text: 'I make space for others’ contributions and give credit where due.' },
-  { id: 'b12', text: 'I set concrete behavioural improvement goals and review them.' }
-];
-
-const postExtraItems = [
-  { id: 'p_engagement', text: 'During the last 2–4 weeks, I actively followed at least part of my AI-assisted development plan.', dimension: 'Engagement' },
-  { id: 'p_helpful', text: 'The tool helped me understand my workplace behaviours more clearly.', dimension: 'Usefulness' },
-  { id: 'p_safe', text: 'The AI-generated suggestions felt safe, proportionate, and appropriate to my workplace context.', dimension: 'AI safety' },
-  { id: 'p_agency', text: 'I felt in control of whether and how to use the tool and AI guidance.', dimension: 'Agency' },
-  { id: 'p_stigma_r', text: 'The exercise made me feel labelled or stigmatised.', dimension: 'Stigma', reverse: true },
-  { id: 'p_recommend', text: 'I would recommend this self-reflection process to other professionals for voluntary development.', dimension: 'Recommendation' }
-];
+const researchSources = {
+  darkTriad: {
+    label: 'Paulhus & Williams (2002)',
+    url: 'https://doi.org/10.1016/S0092-6566(02)00505-6',
+    note: 'Foundational Dark Triad framework: narcissism, Machiavellianism, and psychopathy as overlapping but distinct socially aversive traits.'
+  },
+  sd3: {
+    label: 'Jones & Paulhus (2014)',
+    url: 'https://doi.org/10.1177/1073191113514105',
+    note: 'Short Dark Triad (SD3) construct coverage for narcissism, Machiavellianism, and psychopathy.'
+  },
+  sd4: {
+    label: 'Paulhus et al. (2021)',
+    url: 'https://doi.org/10.1027/1015-5759/a000602',
+    note: 'Short Dark Tetrad (SD4) extension adding everyday sadism to the Dark Triad profile.'
+  },
+  sadismWork: {
+    label: 'Min et al. (2019)',
+    url: 'https://doi.org/10.1016/j.jrp.2019.103862',
+    note: 'Workplace-focused evidence that sadism explains mistreatment above and beyond Dark Triad traits.'
+  },
+  lightTriad: {
+    label: 'Kaufman et al. (2019)',
+    url: 'https://doi.org/10.3389/fpsyg.2019.00467',
+    note: 'Light vs Dark Triad framing and balanced interpretation of prosocial and aversive profiles.'
+  },
+  ethicalLeadership: {
+    label: 'Brown, Treviño & Harrison (2005)',
+    url: 'https://doi.org/10.1016/j.obhdp.2005.03.002',
+    note: 'Ethical leadership as normatively appropriate conduct promoted through social learning, communication, and reinforcement.'
+  },
+  empathy: {
+    label: 'Davis (1983)',
+    url: 'https://doi.org/10.1037/0022-3514.44.1.113',
+    note: 'Multidimensional empathy, including perspective-taking and empathic concern.'
+  },
+  humility: {
+    label: 'Owens, Johnson & Mitchell (2013)',
+    url: 'https://doi.org/10.1287/orsc.1120.0795',
+    note: 'Expressed humility in organisations: accurate self-view, appreciation of others, and teachability.'
+  },
+  oecd: {
+    label: 'OECD AI Principles',
+    url: 'https://legalinstruments.oecd.org/en/instruments/OECD-LEGAL-0449',
+    note: 'Human-centred, transparent, robust, accountable AI principles.'
+  },
+  nist: {
+    label: 'NIST AI RMF 1.0',
+    url: 'https://doi.org/10.6028/NIST.AI.100-1',
+    note: 'AI risk management framework covering map, measure, manage, and govern functions.'
+  }
+};
 
 const assessmentItems = [
   // Narcissism
-  { id: 'n1', dimension: 'Narcissism', type: 'dark', text: 'I often want my contributions to be clearly recognised.' },
-  { id: 'n2', dimension: 'Narcissism', type: 'dark', text: 'I feel frustrated when others receive praise I believe should be mine.' },
-  { id: 'n3', dimension: 'Narcissism', type: 'dark', text: 'I sometimes overestimate how much others need my guidance.' },
-  { id: 'n4', dimension: 'Narcissism', type: 'dark', reverse: true, text: 'I can accept being wrong without needing to protect my image.' },
-  { id: 'n5', dimension: 'Narcissism', type: 'dark', text: 'I tend to centre conversations around my successes.' },
-  { id: 'n6', dimension: 'Narcissism', type: 'dark', text: 'Critical feedback can feel like a personal attack.' },
-  { id: 'n7', dimension: 'Narcissism', type: 'dark', reverse: true, text: 'I can celebrate others’ success without comparing it with my own.' },
+  { id: 'n1', dimension: 'Narcissism', type: 'dark', text: 'I often want my contributions to be clearly recognised.', sources: ['darkTriad', 'sd3'], rationale: 'Recognition-seeking reflects the status and admiration themes commonly associated with narcissistic tendencies.' },
+  { id: 'n2', dimension: 'Narcissism', type: 'dark', text: 'I feel frustrated when others receive praise I believe should be mine.', sources: ['darkTriad', 'sd3'], rationale: 'This item reflects entitlement and sensitivity around recognition, which are central to narcissistic self-image protection.' },
+  { id: 'n3', dimension: 'Narcissism', type: 'dark', text: 'I sometimes overestimate how much others need my guidance.', sources: ['darkTriad', 'sd3'], rationale: 'Overestimating one’s importance captures grandiosity and inflated self-assessment themes.' },
+  { id: 'n4', dimension: 'Narcissism', type: 'dark', reverse: true, text: 'I can accept being wrong without needing to protect my image.', sources: ['darkTriad', 'sd3', 'humility'], rationale: 'This reverse-scored item captures feedback tolerance and reduced image-defensiveness, which lower narcissistic reflective risk.' },
+  { id: 'n5', dimension: 'Narcissism', type: 'dark', text: 'I tend to centre conversations around my successes.', sources: ['darkTriad', 'sd3'], rationale: 'Self-centred achievement narration reflects admiration-seeking and self-enhancement.' },
+  { id: 'n6', dimension: 'Narcissism', type: 'dark', text: 'Critical feedback can feel like a personal attack.', sources: ['darkTriad', 'sd3'], rationale: 'Defensiveness toward criticism is associated with fragile self-image and ego threat.' },
+  { id: 'n7', dimension: 'Narcissism', type: 'dark', reverse: true, text: 'I can celebrate others’ success without comparing it with my own.', sources: ['darkTriad', 'sd3', 'humility'], rationale: 'This reverse-scored item reflects reduced social comparison and healthier recognition of others.' },
 
   // Machiavellianism
-  { id: 'm1', dimension: 'Machiavellianism', type: 'dark', text: 'I sometimes withhold information to keep an advantage.' },
-  { id: 'm2', dimension: 'Machiavellianism', type: 'dark', text: 'I think workplace politics is often necessary to get things done.' },
-  { id: 'm3', dimension: 'Machiavellianism', type: 'dark', text: 'I may adapt what I say depending on who has power in a situation.' },
-  { id: 'm4', dimension: 'Machiavellianism', type: 'dark', reverse: true, text: 'I prefer transparent decision-making even when it reduces my influence.' },
-  { id: 'm5', dimension: 'Machiavellianism', type: 'dark', text: 'I sometimes build alliances to influence outcomes indirectly.' },
-  { id: 'm6', dimension: 'Machiavellianism', type: 'dark', reverse: true, text: 'I avoid manipulating colleagues, even when it would help my goals.' },
-  { id: 'm7', dimension: 'Machiavellianism', type: 'dark', text: 'I carefully manage how others perceive me to achieve results.' },
+  { id: 'm1', dimension: 'Machiavellianism', type: 'dark', text: 'I sometimes withhold information to keep an advantage.', sources: ['darkTriad', 'sd3'], rationale: 'Selective information control reflects strategic manipulation and instrumental influence.' },
+  { id: 'm2', dimension: 'Machiavellianism', type: 'dark', text: 'I think workplace politics is often necessary to get things done.', sources: ['darkTriad', 'sd3'], rationale: 'The item captures a pragmatic or cynical orientation to political influence in organisational settings.' },
+  { id: 'm3', dimension: 'Machiavellianism', type: 'dark', text: 'I may adapt what I say depending on who has power in a situation.', sources: ['darkTriad', 'sd3'], rationale: 'Strategic self-presentation toward powerful stakeholders reflects calculated impression management.' },
+  { id: 'm4', dimension: 'Machiavellianism', type: 'dark', reverse: true, text: 'I prefer transparent decision-making even when it reduces my influence.', sources: ['sd3', 'ethicalLeadership'], rationale: 'This reverse-scored item captures transparency and principled process over private influence.' },
+  { id: 'm5', dimension: 'Machiavellianism', type: 'dark', text: 'I sometimes build alliances to influence outcomes indirectly.', sources: ['darkTriad', 'sd3'], rationale: 'Indirect alliance-building can reflect strategic interpersonal manipulation when used primarily for self-serving influence.' },
+  { id: 'm6', dimension: 'Machiavellianism', type: 'dark', reverse: true, text: 'I avoid manipulating colleagues, even when it would help my goals.', sources: ['sd3', 'ethicalLeadership'], rationale: 'This reverse-scored item measures willingness to limit manipulative tactics despite personal incentives.' },
+  { id: 'm7', dimension: 'Machiavellianism', type: 'dark', text: 'I carefully manage how others perceive me to achieve results.', sources: ['darkTriad', 'sd3'], rationale: 'Calculated impression management maps onto instrumental self-presentation and strategic influence.' },
 
   // Psychopathy (subclinical / workplace reflection language)
-  { id: 'p1', dimension: 'Psychopathy', type: 'dark', text: 'I sometimes take risks at work without fully considering consequences.' },
-  { id: 'p2', dimension: 'Psychopathy', type: 'dark', text: 'I can stay calm in conflict but may appear detached from others’ feelings.' },
-  { id: 'p3', dimension: 'Psychopathy', type: 'dark', text: 'I rarely feel guilty after breaking a minor rule if the outcome benefits me.' },
-  { id: 'p4', dimension: 'Psychopathy', type: 'dark', reverse: true, text: 'I consider potential harm before acting under pressure.' },
-  { id: 'p5', dimension: 'Psychopathy', type: 'dark', text: 'I can be blunt even when it might hurt others.' },
-  { id: 'p6', dimension: 'Psychopathy', type: 'dark', text: 'I find it easy to move on after upsetting someone.' },
-  { id: 'p7', dimension: 'Psychopathy', type: 'dark', reverse: true, text: 'I follow safety and ethics rules even when shortcuts are tempting.' },
+  { id: 'p1', dimension: 'Psychopathy', type: 'dark', text: 'I sometimes take risks at work without fully considering consequences.', sources: ['darkTriad', 'sd3'], rationale: 'Risk-taking and low consequence-checking reflect subclinical psychopathy-related impulsivity.' },
+  { id: 'p2', dimension: 'Psychopathy', type: 'dark', text: 'I can stay calm in conflict but may appear detached from others’ feelings.', sources: ['darkTriad', 'sd3'], rationale: 'Low emotional reactivity can be adaptive, but detachment from others’ feelings may reflect callousness.' },
+  { id: 'p3', dimension: 'Psychopathy', type: 'dark', text: 'I rarely feel guilty after breaking a minor rule if the outcome benefits me.', sources: ['darkTriad', 'sd3'], rationale: 'Reduced guilt around rule-breaking reflects remorse and ethical-control themes in subclinical psychopathy.' },
+  { id: 'p4', dimension: 'Psychopathy', type: 'dark', reverse: true, text: 'I consider potential harm before acting under pressure.', sources: ['sd3', 'ethicalLeadership'], rationale: 'This reverse-scored item captures consequence-checking and harm awareness under pressure.' },
+  { id: 'p5', dimension: 'Psychopathy', type: 'dark', text: 'I can be blunt even when it might hurt others.', sources: ['darkTriad', 'sd3', 'empathy'], rationale: 'Bluntness without interpersonal concern reflects reduced sensitivity to emotional harm.' },
+  { id: 'p6', dimension: 'Psychopathy', type: 'dark', text: 'I find it easy to move on after upsetting someone.', sources: ['darkTriad', 'sd3', 'empathy'], rationale: 'Ease in moving on after harm can reflect lower remorse or reduced empathic concern.' },
+  { id: 'p7', dimension: 'Psychopathy', type: 'dark', reverse: true, text: 'I follow safety and ethics rules even when shortcuts are tempting.', sources: ['sd3', 'ethicalLeadership'], rationale: 'This reverse-scored item reflects behavioural restraint and respect for ethical safeguards.' },
 
   // Sadism
-  { id: 's1', dimension: 'Sadism', type: 'dark', text: 'I sometimes enjoy seeing arrogant people brought down.' },
-  { id: 's2', dimension: 'Sadism', type: 'dark', text: 'I have used sarcasm or teasing even when it may embarrass someone.' },
-  { id: 's3', dimension: 'Sadism', type: 'dark', text: 'I find it difficult to feel concern when someone who annoyed me struggles.' },
-  { id: 's4', dimension: 'Sadism', type: 'dark', reverse: true, text: 'I avoid humour that humiliates others.' },
-  { id: 's5', dimension: 'Sadism', type: 'dark', text: 'I may feel satisfaction when a difficult colleague experiences consequences.' },
-  { id: 's6', dimension: 'Sadism', type: 'dark', reverse: true, text: 'I would intervene if workplace jokes became cruel.' },
-  { id: 's7', dimension: 'Sadism', type: 'dark', text: 'In conflict, I sometimes want the other person to feel the impact of my anger.' },
+  { id: 's1', dimension: 'Sadism', type: 'dark', text: 'I sometimes enjoy seeing arrogant people brought down.', sources: ['sd4', 'sadismWork'], rationale: 'Enjoyment of another person’s social defeat reflects everyday sadism-related affective response.' },
+  { id: 's2', dimension: 'Sadism', type: 'dark', text: 'I have used sarcasm or teasing even when it may embarrass someone.', sources: ['sd4', 'sadismWork'], rationale: 'Humiliating humour or teasing is a workplace-relevant expression of interpersonal harm.' },
+  { id: 's3', dimension: 'Sadism', type: 'dark', text: 'I find it difficult to feel concern when someone who annoyed me struggles.', sources: ['sd4', 'sadismWork', 'empathy'], rationale: 'Reduced concern for disliked others can signal indifference to suffering in antagonistic contexts.' },
+  { id: 's4', dimension: 'Sadism', type: 'dark', reverse: true, text: 'I avoid humour that humiliates others.', sources: ['sd4', 'sadismWork', 'ethicalLeadership'], rationale: 'This reverse-scored item captures active avoidance of humiliation and cruelty.' },
+  { id: 's5', dimension: 'Sadism', type: 'dark', text: 'I may feel satisfaction when a difficult colleague experiences consequences.', sources: ['sd4', 'sadismWork'], rationale: 'Satisfaction at another’s discomfort or punishment reflects sadism-related enjoyment of harm.' },
+  { id: 's6', dimension: 'Sadism', type: 'dark', reverse: true, text: 'I would intervene if workplace jokes became cruel.', sources: ['sadismWork', 'ethicalLeadership'], rationale: 'This reverse-scored item reflects willingness to interrupt cruelty and protect dignity.' },
+  { id: 's7', dimension: 'Sadism', type: 'dark', text: 'In conflict, I sometimes want the other person to feel the impact of my anger.', sources: ['sd4', 'sadismWork'], rationale: 'Wanting others to feel emotional pain during conflict reflects retaliatory harm motivation.' },
 
   // Empathy
-  { id: 'e1', dimension: 'Empathy', type: 'light', text: 'I try to understand colleagues’ perspectives before judging their actions.' },
-  { id: 'e2', dimension: 'Empathy', type: 'light', text: 'I notice when someone is uncomfortable in a discussion.' },
-  { id: 'e3', dimension: 'Empathy', type: 'light', text: 'I ask questions to understand how decisions affect others.' },
-  { id: 'e4', dimension: 'Empathy', type: 'light', text: 'I can disagree without dismissing others’ feelings.' },
-  { id: 'e5', dimension: 'Empathy', type: 'light', text: 'I make time to consider the human impact of change.' },
-  { id: 'e6', dimension: 'Empathy', type: 'light', text: 'I respond with curiosity when people see things differently.' },
-  { id: 'e7', dimension: 'Empathy', type: 'light', reverse: true, text: 'I sometimes focus on tasks so strongly that I miss how people feel.' },
+  { id: 'e1', dimension: 'Empathy', type: 'light', text: 'I try to understand colleagues’ perspectives before judging their actions.', sources: ['empathy', 'lightTriad'], rationale: 'Perspective-taking is a core component of multidimensional empathy and prosocial interpretation.' },
+  { id: 'e2', dimension: 'Empathy', type: 'light', text: 'I notice when someone is uncomfortable in a discussion.', sources: ['empathy'], rationale: 'Noticing discomfort reflects interpersonal sensitivity and emotional awareness.' },
+  { id: 'e3', dimension: 'Empathy', type: 'light', text: 'I ask questions to understand how decisions affect others.', sources: ['empathy', 'ethicalLeadership'], rationale: 'Questioning impact reflects perspective-taking and ethical consideration of affected stakeholders.' },
+  { id: 'e4', dimension: 'Empathy', type: 'light', text: 'I can disagree without dismissing others’ feelings.', sources: ['empathy', 'ethicalLeadership'], rationale: 'Respectful disagreement captures emotional validation while maintaining task clarity.' },
+  { id: 'e5', dimension: 'Empathy', type: 'light', text: 'I make time to consider the human impact of change.', sources: ['empathy', 'ethicalLeadership'], rationale: 'Considering human impact reflects empathic concern in workplace decision-making.' },
+  { id: 'e6', dimension: 'Empathy', type: 'light', text: 'I respond with curiosity when people see things differently.', sources: ['empathy', 'lightTriad'], rationale: 'Curiosity toward difference supports perspective-taking and reduces reactive judgement.' },
+  { id: 'e7', dimension: 'Empathy', type: 'light', reverse: true, text: 'I sometimes focus on tasks so strongly that I miss how people feel.', sources: ['empathy'], rationale: 'This reverse-scored item captures a barrier to empathic awareness when task focus overrides people awareness.' },
 
   // Humility
-  { id: 'h1', dimension: 'Humility', type: 'light', text: 'I acknowledge when others have better ideas than mine.' },
-  { id: 'h2', dimension: 'Humility', type: 'light', text: 'I ask for feedback even when it might challenge my self-image.' },
-  { id: 'h3', dimension: 'Humility', type: 'light', text: 'I give credit publicly for others’ contributions.' },
-  { id: 'h4', dimension: 'Humility', type: 'light', text: 'I can say “I don’t know” without feeling diminished.' },
-  { id: 'h5', dimension: 'Humility', type: 'light', text: 'I apologise when my behaviour has harmed someone.' },
-  { id: 'h6', dimension: 'Humility', type: 'light', text: 'I invite dissenting views before finalising decisions.' },
-  { id: 'h7', dimension: 'Humility', type: 'light', reverse: true, text: 'I find it difficult to admit mistakes to my team.' },
+  { id: 'h1', dimension: 'Humility', type: 'light', text: 'I acknowledge when others have better ideas than mine.', sources: ['humility'], rationale: 'Recognising others’ strengths reflects accurate self-view and appreciation of others.' },
+  { id: 'h2', dimension: 'Humility', type: 'light', text: 'I ask for feedback even when it might challenge my self-image.', sources: ['humility'], rationale: 'Seeking challenging feedback reflects teachability and openness to correction.' },
+  { id: 'h3', dimension: 'Humility', type: 'light', text: 'I give credit publicly for others’ contributions.', sources: ['humility', 'ethicalLeadership'], rationale: 'Public credit-giving reflects appreciation of others and ethical recognition.' },
+  { id: 'h4', dimension: 'Humility', type: 'light', text: 'I can say “I don’t know” without feeling diminished.', sources: ['humility'], rationale: 'Acknowledging limits reflects accurate self-assessment and reduced image-defensiveness.' },
+  { id: 'h5', dimension: 'Humility', type: 'light', text: 'I apologise when my behaviour has harmed someone.', sources: ['humility', 'ethicalLeadership'], rationale: 'Apologising reflects accountability, teachability, and respect for others’ experience.' },
+  { id: 'h6', dimension: 'Humility', type: 'light', text: 'I invite dissenting views before finalising decisions.', sources: ['humility', 'ethicalLeadership'], rationale: 'Inviting dissent reflects openness to others’ knowledge and reduces overconfidence.' },
+  { id: 'h7', dimension: 'Humility', type: 'light', reverse: true, text: 'I find it difficult to admit mistakes to my team.', sources: ['humility'], rationale: 'This reverse-scored item captures resistance to accountability and low openness about fallibility.' },
 
   // Ethical leadership
-  { id: 'el1', dimension: 'Ethical Leadership', type: 'light', text: 'I consider fairness before making decisions that affect others.' },
-  { id: 'el2', dimension: 'Ethical Leadership', type: 'light', text: 'I explain the reasons behind decisions wherever appropriate.' },
-  { id: 'el3', dimension: 'Ethical Leadership', type: 'light', text: 'I challenge behaviour that undermines respect or integrity.' },
-  { id: 'el4', dimension: 'Ethical Leadership', type: 'light', text: 'I protect confidentiality when people share sensitive information.' },
-  { id: 'el5', dimension: 'Ethical Leadership', type: 'light', text: 'I choose transparent processes over convenient shortcuts.' },
-  { id: 'el6', dimension: 'Ethical Leadership', type: 'light', text: 'I encourage people to raise concerns without fear.' },
-  { id: 'el7', dimension: 'Ethical Leadership', type: 'light', reverse: true, text: 'I sometimes justify questionable actions if they help achieve targets.' }
+  { id: 'el1', dimension: 'Ethical Leadership', type: 'light', text: 'I consider fairness before making decisions that affect others.', sources: ['ethicalLeadership'], rationale: 'Fairness in decisions is central to ethical leadership and normatively appropriate conduct.' },
+  { id: 'el2', dimension: 'Ethical Leadership', type: 'light', text: 'I explain the reasons behind decisions wherever appropriate.', sources: ['ethicalLeadership'], rationale: 'Explaining decisions supports transparency and ethical communication.' },
+  { id: 'el3', dimension: 'Ethical Leadership', type: 'light', text: 'I challenge behaviour that undermines respect or integrity.', sources: ['ethicalLeadership'], rationale: 'Challenging harmful conduct reflects reinforcement of ethical norms.' },
+  { id: 'el4', dimension: 'Ethical Leadership', type: 'light', text: 'I protect confidentiality when people share sensitive information.', sources: ['ethicalLeadership'], rationale: 'Protecting confidentiality reflects integrity, trustworthiness, and responsible leadership.' },
+  { id: 'el5', dimension: 'Ethical Leadership', type: 'light', text: 'I choose transparent processes over convenient shortcuts.', sources: ['ethicalLeadership'], rationale: 'Transparent process over expediency reflects ethical decision discipline.' },
+  { id: 'el6', dimension: 'Ethical Leadership', type: 'light', text: 'I encourage people to raise concerns without fear.', sources: ['ethicalLeadership'], rationale: 'Encouraging voice supports ethical climate and psychologically safer reporting of concerns.' },
+  { id: 'el7', dimension: 'Ethical Leadership', type: 'light', reverse: true, text: 'I sometimes justify questionable actions if they help achieve targets.', sources: ['ethicalLeadership'], rationale: 'This reverse-scored item captures ethical compromise under performance pressure.' }
 ];
 
 const dimensionOrder = {
@@ -151,15 +178,13 @@ function setStatus(id, message, isError = false) {
 function renderLikertQuestion(item, groupName, number) {
   const block = document.createElement('fieldset');
   block.className = 'question-block';
+
   const legend = document.createElement('legend');
-  legend.className = 'question-title';
+  legend.className = 'question-title no-tag';
+
   const text = document.createElement('strong');
   text.textContent = `${number}. ${item.text}`;
-  const tag = document.createElement('span');
-  tag.className = 'dimension-tag';
-  tag.textContent = item.dimension || 'Behaviour';
   legend.appendChild(text);
-  legend.appendChild(tag);
   block.appendChild(legend);
 
   const scale = document.createElement('div');
@@ -183,6 +208,7 @@ function renderLikertQuestion(item, groupName, number) {
 
 function renderForm(formId, items, groupName) {
   const form = document.getElementById(formId);
+  if (!form) return;
   form.innerHTML = '';
   items.forEach((item, idx) => form.appendChild(renderLikertQuestion(item, groupName, idx + 1)));
 }
@@ -201,6 +227,7 @@ function getFormValues(formId, items, groupName) {
 function setFormValues(formId, items, groupName, values) {
   if (!values) return;
   const form = document.getElementById(formId);
+  if (!form) return;
   for (const item of items) {
     const value = values[item.id];
     if (value) {
@@ -210,10 +237,19 @@ function setFormValues(formId, items, groupName, values) {
   }
 }
 
-function randomFill(formId, items, groupName, mode = 'balanced') {
+function clearForm(formId, items, groupName) {
+  const form = document.getElementById(formId);
+  if (!form) return;
+  for (const item of items) {
+    const selected = form.querySelector(`input[name="${groupName}_${item.id}"]:checked`);
+    if (selected) selected.checked = false;
+  }
+}
+
+function randomFill(formId, items, groupName) {
   const values = {};
   items.forEach(item => {
-    const base = mode === 'positive' ? 4 : 3;
+    const base = item.type === 'light' ? 4 : 3;
     const noise = Math.floor(Math.random() * 3) - 1;
     values[item.id] = Math.min(5, Math.max(1, base + noise));
   });
@@ -243,16 +279,6 @@ function percentageFromMean(mean) {
 function mean(values) {
   if (!values.length) return 0;
   return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
-function scoreSurvey(values, items) {
-  const scored = items.map(item => item.reverse ? reverseScore(values[item.id]) : values[item.id]);
-  const avg = mean(scored);
-  return {
-    mean: Number(avg.toFixed(2)),
-    percent: percentageFromMean(avg),
-    completeItems: scored.length
-  };
 }
 
 function scoreAssessment(values) {
@@ -287,27 +313,12 @@ function bandFor(type, percent) {
   return 'Reported strength';
 }
 
-function savePre(event) {
-  event.preventDefault();
-  const values = getFormValues('preForm', baselineItems, 'pre');
-  if (!values) return setStatus('preStatus', 'Please answer every pre-survey item before saving.', true);
-  const payload = {
-    kind: 'pre_survey',
-    participantCode: getCode(),
-    timestamp: new Date().toISOString(),
-    values,
-    score: scoreSurvey(values, baselineItems)
-  };
-  saveJson(STORAGE_KEYS.pre, payload);
-  setStatus('preStatus', `Saved locally. Baseline workplace reflection index: ${payload.score.percent}/100.`);
-}
-
 function saveAssessment(event) {
   event.preventDefault();
   const values = getFormValues('assessmentForm', assessmentItems, 'assessment');
   if (!values) return setStatus('assessmentStatus', 'Please answer every self-assessment item before calculating scores.', true);
   const payload = {
-    kind: 'self_assessment',
+    kind: 'leaderlens_self_assessment',
     participantCode: getCode(),
     timestamp: new Date().toISOString(),
     values,
@@ -319,26 +330,9 @@ function saveAssessment(event) {
   activateTab('results');
 }
 
-function savePost(event) {
-  event.preventDefault();
-  const postItems = [...baselineItems, ...postExtraItems];
-  const values = getFormValues('postForm', postItems, 'post');
-  if (!values) return setStatus('postStatus', 'Please answer every post-survey item before saving.', true);
-  const payload = {
-    kind: 'post_survey',
-    participantCode: getCode(),
-    timestamp: new Date().toISOString(),
-    values,
-    repeatedScore: scoreSurvey(values, baselineItems),
-    acceptabilityScore: scoreSurvey(values, postExtraItems)
-  };
-  saveJson(STORAGE_KEYS.post, payload);
-  setStatus('postStatus', `Saved locally. Follow-up workplace reflection index: ${payload.repeatedScore.percent}/100.`);
-  renderComparison();
-}
-
 function drawBarChart(canvasId, title, labels, scores, options = {}) {
   const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const width = canvas.width;
   const height = canvas.height;
@@ -412,6 +406,7 @@ function renderResults() {
   if (!assessment) {
     resultsEmpty.classList.remove('hidden');
     resultsContent.classList.add('hidden');
+    updateSummaryBox();
     return;
   }
 
@@ -424,7 +419,7 @@ function renderResults() {
     const s = assessment.scores[dim];
     const div = document.createElement('div');
     div.className = `score-card ${s.type}`;
-    div.innerHTML = `<span>${dim}</span><strong>${s.percent}/100</strong><span>${s.band}</span>`;
+    div.innerHTML = `<span>${escapeHtml(dim)}</span><strong>${s.percent}/100</strong><span>${escapeHtml(s.band)}</span>`;
     scoreCards.appendChild(div);
   });
 
@@ -436,7 +431,6 @@ function renderResults() {
 
 function buildAIPrompt() {
   const assessment = loadJson(STORAGE_KEYS.assessment);
-  const pre = loadJson(STORAGE_KEYS.pre);
   if (!assessment) return '';
   const darkLines = dimensionOrder.dark.map(dim => {
     const s = assessment.scores[dim];
@@ -447,53 +441,20 @@ function buildAIPrompt() {
     return `- ${dim}: ${s.percent}/100 (${s.band}). Development focus: ${lightAdvice[dim]}`;
   }).join('\n');
 
-  const baseline = pre ? `My baseline workplace reflection index is ${pre.score.percent}/100.` : 'I have not included a baseline workplace reflection index.';
-  return `You are helping me reflect on my workplace behaviour and leadership style. Please act as a cautious, ethical, non-clinical development coach.\n\nImportant boundaries:\n- Do not diagnose me or label me as a narcissist, Machiavellian, psychopath, sadist, or unethical leader.\n- Treat these scores as self-reflection signals, not clinical or objective truth.\n- Prioritise psychological safety, workplace ethics, dignity, and low-risk behaviour experiments.\n- Do not recommend confrontation, retaliation, manipulation, surveillance, or anything that could breach workplace policy.\n- If a situation involves bullying, harassment, discrimination, self-harm, or risk to others, advise me to seek appropriate formal support rather than handling it alone.\n\nContext:\n${baseline}\n\nMy Dark Tetrad reflective signals are:\n${darkLines}\n\nMy light / ethical leadership capacities are:\n${lightLines}\n\nPlease provide:\n1. A balanced interpretation of what this profile might suggest about my leadership style, biases, and workplace triggers.\n2. The top 3 behavioural risks I should monitor, written in non-stigmatising language.\n3. The top 3 strengths or protective capacities I can build on.\n4. A practical 2–4 week improvement plan with weekly micro-experiments, reflection questions, and observable workplace behaviours.\n5. Short scripts for seeking feedback, pausing before reactive decisions, giving credit, and responding ethically to conflict.\n6. A final reminder about interpreting these results cautiously and respecting others’ privacy and dignity.`;
-}
-
-function renderComparison() {
-  const pre = loadJson(STORAGE_KEYS.pre);
-  const post = loadJson(STORAGE_KEYS.post);
-  const box = document.getElementById('postComparison');
-  if (!post) {
-    box.classList.add('hidden');
-    return;
-  }
-  box.classList.remove('hidden');
-  if (!pre) {
-    box.innerHTML = '<strong>Post-survey saved.</strong><p>No pre-survey is stored in this browser, so a comparison cannot be calculated.</p>';
-    return;
-  }
-  const delta = post.repeatedScore.percent - pre.score.percent;
-  const dir = delta > 0 ? '+' : '';
-  box.innerHTML = `
-    <h3>Pre/Post comparison</h3>
-    <div class="comparison-grid">
-      <div class="comparison-card"><span>Pre-survey index</span><strong>${pre.score.percent}/100</strong></div>
-      <div class="comparison-card"><span>Post-survey index</span><strong>${post.repeatedScore.percent}/100</strong></div>
-      <div class="comparison-card"><span>Change</span><strong>${dir}${delta}</strong></div>
-      <div class="comparison-card"><span>Acceptability index</span><strong>${post.acceptabilityScore.percent}/100</strong></div>
-    </div>
-    <p class="muted">Interpret cautiously: change may reflect self-report bias, novelty effects, priming, or events outside the tool.</p>`;
-  updateSummaryBox();
+  return `You are helping me reflect on my workplace behaviour and leadership style. Please act as a cautious, ethical, non-clinical development coach.\n\nImportant boundaries:\n- Do not diagnose me or label me as a narcissist, Machiavellian, psychopath, sadist, or unethical leader.\n- Treat these scores as self-reflection signals, not clinical or objective truth.\n- Prioritise psychological safety, workplace ethics, dignity, and low-risk behaviour experiments.\n- Do not recommend confrontation, retaliation, manipulation, surveillance, or anything that could breach workplace policy.\n- If a situation involves bullying, harassment, discrimination, self-harm, or risk to others, advise me to seek appropriate formal support rather than handling it alone.\n\nMy anonymous LeaderLens AI study code is ${getCode()} if I need to use it in a separate survey.\n\nMy Dark Tetrad reflective signals are:\n${darkLines}\n\nMy light / ethical leadership capacities are:\n${lightLines}\n\nPlease provide:\n1. A balanced interpretation of what this profile might suggest about my leadership style, biases, and workplace triggers.\n2. The top 3 behavioural risks I should monitor, written in non-stigmatising language.\n3. The top 3 strengths or protective capacities I can build on.\n4. A practical 2–4 week improvement plan with weekly micro-experiments, reflection questions, and observable workplace behaviours.\n5. Short scripts for seeking feedback, pausing before reactive decisions, giving credit, and responding ethically to conflict.\n6. A final reminder about interpreting these results cautiously and respecting others’ privacy and dignity.`;
 }
 
 function getFullSummary() {
-  const pre = loadJson(STORAGE_KEYS.pre);
   const assessment = loadJson(STORAGE_KEYS.assessment);
-  const post = loadJson(STORAGE_KEYS.post);
-  const summary = {
+  return {
     participantCode: getCode(),
     exportedAt: new Date().toISOString(),
     privacyNote: 'Generated locally in browser. User controls whether to share/export.',
-    preSurvey: pre ? { timestamp: pre.timestamp, score: pre.score } : null,
-    selfAssessment: assessment ? { timestamp: assessment.timestamp, scores: assessment.scores } : null,
-    postSurvey: post ? { timestamp: post.timestamp, repeatedScore: post.repeatedScore, acceptabilityScore: post.acceptabilityScore } : null
+    selfAssessment: assessment ? {
+      timestamp: assessment.timestamp,
+      scores: assessment.scores
+    } : null
   };
-  if (pre && post) {
-    summary.prePostChange = post.repeatedScore.percent - pre.score.percent;
-  }
-  return summary;
 }
 
 function updateSummaryBox() {
@@ -544,9 +505,53 @@ async function copyText(text, statusId, message) {
   try {
     await navigator.clipboard.writeText(text);
     setStatus(statusId, message);
+    return true;
   } catch {
     setStatus(statusId, 'Copy failed. Please select the text and copy manually.', true);
+    return false;
   }
+}
+
+async function copyPromptAndOpen(url, label) {
+  const prompt = document.getElementById('aiPrompt').value;
+  const copied = await copyText(prompt, 'resultsStatus', `Prompt copied. ${label} is opening in a new tab; paste the prompt into the chat box.`);
+  const opened = window.open(url, '_blank', 'noopener');
+  if (!opened) {
+    setStatus('resultsStatus', copied ? `Prompt copied. Your browser blocked the ${label} popup; please allow popups or open it manually.` : `Copy failed and your browser blocked the ${label} popup.`, true);
+  }
+}
+
+function renderMapping() {
+  const container = document.getElementById('mappingList');
+  if (!container) return;
+  container.innerHTML = '';
+  assessmentItems.forEach((item, idx) => {
+    const card = document.createElement('article');
+    card.className = `mapping-card ${item.type}`;
+    const sources = item.sources.map(key => {
+      const source = researchSources[key];
+      return `<a href="${source.url}" target="_blank" rel="noopener">${escapeHtml(source.label)}</a>`;
+    }).join(', ');
+    card.innerHTML = `
+      <div class="mapping-head">
+        <span class="question-number">Q${idx + 1}</span>
+        <span class="mapping-dimension">${escapeHtml(item.dimension)}${item.reverse ? ' (reverse-scored)' : ''}</span>
+      </div>
+      <p><strong>Item:</strong> ${escapeHtml(item.text)}</p>
+      <p><strong>Justification:</strong> ${escapeHtml(item.rationale)}</p>
+      <p class="source-links"><strong>Research basis:</strong> ${sources}</p>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 function activateTab(tabId) {
@@ -554,81 +559,68 @@ function activateTab(tabId) {
   document.querySelectorAll('.panel').forEach(panel => panel.classList.toggle('active', panel.id === tabId));
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (tabId === 'results') renderResults();
-  if (tabId === 'post') renderComparison();
-  if (tabId === 'researcher') updateSummaryBox();
+  if (tabId === 'mapping') renderMapping();
+  if (tabId === 'export') updateSummaryBox();
 }
 
 function bindEvents() {
   document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => activateTab(btn.dataset.tab)));
+
+  document.getElementById('copyCodeBtn').addEventListener('click', () => copyText(getCode(), 'codeStatus', 'Study code copied.'));
+
   document.getElementById('newCodeBtn').addEventListener('click', () => {
-    if (!confirm('Create a new participant code? Existing local data will remain unless you delete it.')) return;
+    if (!confirm('Create a new participant code? Existing local assessment data will remain unless you delete it.')) return;
     localStorage.setItem(STORAGE_KEYS.code, generateCode());
     document.getElementById('participantCode').textContent = getCode();
     updateSummaryBox();
+    renderResults();
+    setStatus('codeStatus', 'New study code created.');
   });
+
   document.getElementById('deleteAllBtn').addEventListener('click', () => {
     if (!confirm('Delete all locally stored data for this tool on this device?')) return;
     Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
     localStorage.setItem(STORAGE_KEYS.code, generateCode());
     document.getElementById('participantCode').textContent = getCode();
-    setFormValues('preForm', baselineItems, 'pre', {});
-    setFormValues('assessmentForm', assessmentItems, 'assessment', {});
-    setFormValues('postForm', [...baselineItems, ...postExtraItems], 'post', {});
+    clearForm('assessmentForm', assessmentItems, 'assessment');
     renderResults();
     updateSummaryBox();
+    setStatus('codeStatus', 'Local data deleted and a new study code generated.');
   });
 
-  document.getElementById('savePreBtn').addEventListener('click', savePre);
   document.getElementById('scoreBtn').addEventListener('click', saveAssessment);
-  document.getElementById('savePostBtn').addEventListener('click', savePost);
-  document.getElementById('compareBtn').addEventListener('click', (e) => { e.preventDefault(); renderComparison(); });
 
-  document.getElementById('exportPreBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    const pre = loadJson(STORAGE_KEYS.pre);
-    if (!pre) return setStatus('preStatus', 'Save the pre-survey before exporting.', true);
-    exportJson(`leaderlens-pre-${getCode()}.json`, pre);
-  });
   document.getElementById('exportAssessmentBtn').addEventListener('click', (e) => {
     e.preventDefault();
     const assessment = loadJson(STORAGE_KEYS.assessment);
     if (!assessment) return setStatus('assessmentStatus', 'Calculate scores before exporting.', true);
     exportJson(`leaderlens-assessment-${getCode()}.json`, assessment);
   });
-  document.getElementById('exportPostBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    const post = loadJson(STORAGE_KEYS.post);
-    if (!post) return setStatus('postStatus', 'Save the post-survey before exporting.', true);
-    exportJson(`leaderlens-post-${getCode()}.json`, post);
-  });
+
   document.getElementById('downloadReportBtn').addEventListener('click', () => exportJson(`leaderlens-report-${getCode()}.json`, getFullSummary()));
-  document.getElementById('copyPromptBtn').addEventListener('click', () => copyText(document.getElementById('aiPrompt').value, 'resultsStatus', 'AI prompt copied. Paste it into your chosen GenAI assistant.'));
-  document.getElementById('copySummaryBtn').addEventListener('click', () => copyText(JSON.stringify(getFullSummary(), null, 2), 'researcherStatus', 'Anonymous summary copied.'));
+  document.getElementById('copyPromptBtn').addEventListener('click', () => copyText(document.getElementById('aiPrompt').value, 'resultsStatus', 'Prompt copied. Paste it into your chosen GenAI assistant.'));
+  document.getElementById('openChatGPTBtn').addEventListener('click', () => copyPromptAndOpen('https://chatgpt.com/', 'ChatGPT'));
+  document.getElementById('openCopilotBtn').addEventListener('click', () => copyPromptAndOpen('https://copilot.microsoft.com/', 'Copilot'));
+  document.getElementById('openGeminiBtn').addEventListener('click', () => copyPromptAndOpen('https://gemini.google.com/app', 'Gemini'));
+  document.getElementById('openClaudeBtn').addEventListener('click', () => copyPromptAndOpen('https://claude.ai/new', 'Claude'));
+
+  document.getElementById('copySummaryBtn').addEventListener('click', () => copyText(JSON.stringify(getFullSummary(), null, 2), 'exportStatus', 'Anonymous summary copied.'));
   document.getElementById('downloadSummaryBtn').addEventListener('click', () => exportJson(`leaderlens-summary-${getCode()}.json`, getFullSummary()));
   document.getElementById('downloadCsvBtn').addEventListener('click', exportCsv);
 
   document.querySelectorAll('[data-fill]').forEach(btn => btn.addEventListener('click', () => {
-    const target = btn.dataset.fill;
-    if (target === 'pre') randomFill('preForm', baselineItems, 'pre', 'positive');
-    if (target === 'assessment') randomFill('assessmentForm', assessmentItems, 'assessment', 'balanced');
-    if (target === 'post') randomFill('postForm', [...baselineItems, ...postExtraItems], 'post', 'positive');
+    if (btn.dataset.fill === 'assessment') randomFill('assessmentForm', assessmentItems, 'assessment');
   }));
 }
 
 function initialise() {
   document.getElementById('participantCode').textContent = getCode();
-  renderForm('preForm', baselineItems, 'pre');
   renderForm('assessmentForm', assessmentItems, 'assessment');
-  renderForm('postForm', [...baselineItems, ...postExtraItems], 'post');
-  const pre = loadJson(STORAGE_KEYS.pre);
   const assessment = loadJson(STORAGE_KEYS.assessment);
-  const post = loadJson(STORAGE_KEYS.post);
-  setFormValues('preForm', baselineItems, 'pre', pre?.values);
   setFormValues('assessmentForm', assessmentItems, 'assessment', assessment?.values);
-  setFormValues('postForm', [...baselineItems, ...postExtraItems], 'post', post?.values);
   bindEvents();
   renderResults();
-  renderComparison();
+  renderMapping();
   updateSummaryBox();
 }
 
