@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="LeaderLens AI is a privacy-preserving, browser-based self-reflection and improvement tool for Dark Tetrad and ethical leadership traits." />
+  <title>LeaderLens AI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-grid">
+      <div>
+        <p class="eyebrow">MBA Capstone Research Prototype</p>
+        <h1>LeaderLens AI</h1>
+        <p class="lead">A privacy-preserving self-reflection and improvement tool for dark traits, ethical leadership, and AI-assisted development planning.</p>
+      </div>
+      <div class="privacy-card" aria-label="Privacy summary">
+        <strong>Privacy-first design</strong>
+        <span>No account. No server. No tracking. Results stay in your browser unless you choose to export or share them.</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs wrap" aria-label="Tool sections">
+    <button class="tab active" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="pre">1. Pre‑Survey</button>
+    <button class="tab" data-tab="assessment">2. Self‑Assessment</button>
+    <button class="tab" data-tab="results">3. Results & AI Plan</button>
+    <button class="tab" data-tab="post">4. Post‑Survey</button>
+    <button class="tab" data-tab="researcher">Researcher Export</button>
+  </nav>
+
+  <main class="wrap">
+    <section id="overview" class="panel active" tabindex="0">
+      <div class="two-col">
+        <div>
+          <h2>Purpose of this tool</h2>
+          <p>LeaderLens AI supports individual self-reflection on four Dark Tetrad tendencies—narcissism, Machiavellianism, psychopathy, and sadism—alongside three light/ethical leadership capacities: empathy, humility, and ethical leadership.</p>
+          <p>The aim is developmental: the tool helps you notice behavioural tendencies, generate a structured reflection prompt for a GenAI assistant such as Copilot or ChatGPT, and create a safe 2–4 week improvement plan.</p>
+          <div class="notice warning">
+            <strong>Important:</strong> This is not a clinical, diagnostic, recruitment, performance-management, or disciplinary tool. Scores are reflective indicators only. Use them to guide learning, not to label yourself or others.
+          </div>
+        </div>
+        <div class="card">
+          <h3>Your study code</h3>
+          <p class="muted">Use this anonymous code across the pre-survey, assessment, and post-survey. It is stored only in this browser.</p>
+          <div class="code-row">
+            <span id="participantCode" class="participant-code">—</span>
+            <button id="newCodeBtn" class="small">New code</button>
+          </div>
+          <button id="deleteAllBtn" class="danger small">Delete all local data</button>
+        </div>
+      </div>
+
+      <h2>How to use it</h2>
+      <ol class="steps">
+        <li>Complete the <strong>Pre‑Survey</strong> to capture your baseline self-perception.</li>
+        <li>Complete the <strong>Self‑Assessment</strong> to view dark and light trait profiles.</li>
+        <li>Use <strong>Results & AI Plan</strong> to copy a structured prompt into Copilot or ChatGPT.</li>
+        <li>Follow the AI-assisted development plan for <strong>2–4 weeks</strong>.</li>
+        <li>Complete the <strong>Post‑Survey</strong> and export the anonymous comparison summary if requested by the researcher.</li>
+      </ol>
+
+      <h2>Research basis</h2>
+      <p class="muted">The tool is informed by established constructs in Dark Triad/Tetrad research, ethical leadership, empathy, humility, and trustworthy AI governance. It uses original research-prototype items rather than copyrighted questionnaire items.</p>
+      <div class="reference-grid">
+        <span>Paulhus & Williams (2002)</span>
+        <span>Jones & Paulhus (2014)</span>
+        <span>Buckels et al. / SD4 literature</span>
+        <span>Kaufman et al. (2019)</span>
+        <span>Brown, Treviño & Harrison (2005)</span>
+        <span>Davis (1983)</span>
+        <span>Owens, Johnson & Mitchell (2013)</span>
+        <span>OECD AI Principles / NIST AI RMF</span>
+      </div>
+    </section>
+
+    <section id="pre" class="panel" tabindex="0">
+      <div class="panel-head">
+        <div>
+          <h2>1. Pre‑Survey: Baseline workplace reflection</h2>
+          <p>Answer these before using the self-assessment tool. The same behavioural indicators appear again in the post‑survey so you can compare perceived change.</p>
+        </div>
+        <button class="secondary" data-fill="pre">Demo fill</button>
+      </div>
+      <form id="preForm" class="question-form"></form>
+      <div class="action-bar">
+        <button id="savePreBtn" class="primary">Save pre‑survey locally</button>
+        <button id="exportPreBtn" class="secondary">Download pre‑survey JSON</button>
+      </div>
+      <div id="preStatus" class="status" aria-live="polite"></div>
+    </section>
+
+    <section id="assessment" class="panel" tabindex="0">
+      <div class="panel-head">
+        <div>
+          <h2>2. Self‑Assessment: Dark and light trait profile</h2>
+          <p>Rate each statement honestly. No item responses are sent anywhere. Higher dark scores indicate stronger reflective signals to manage; higher light scores indicate stronger prosocial/ethical capacities.</p>
+        </div>
+        <button class="secondary" data-fill="assessment">Demo fill</button>
+      </div>
+      <div class="notice">
+        <strong>Interpretation caution:</strong> These are original framework-informed items for an MBA research prototype. They are not validated clinical instruments and should not be used to diagnose, screen, select, rank, or discipline anyone.
+      </div>
+      <form id="assessmentForm" class="question-form"></form>
+      <div class="action-bar">
+        <button id="scoreBtn" class="primary">Calculate scores</button>
+        <button id="exportAssessmentBtn" class="secondary">Download assessment JSON</button>
+      </div>
+      <div id="assessmentStatus" class="status" aria-live="polite"></div>
+    </section>
+
+    <section id="results" class="panel" tabindex="0">
+      <h2>3. Results & AI-assisted development plan</h2>
+      <p>Your score dashboard will appear after you complete the self-assessment. Use the prompt builder to ask a GenAI assistant for a safe, practical, non-diagnostic improvement plan.</p>
+
+      <div id="resultsEmpty" class="notice warning">No assessment results are saved yet. Complete the self-assessment first.</div>
+
+      <div id="resultsContent" class="hidden">
+        <div class="result-summary" id="scoreCards"></div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>Dark Tetrad reflective signals</h3>
+            <canvas id="darkChart" width="720" height="360" role="img" aria-label="Dark Tetrad score chart"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Light / ethical leadership capacities</h3>
+            <canvas id="lightChart" width="720" height="360" role="img" aria-label="Light and ethical leadership score chart"></canvas>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <h3>Interpretation guide</h3>
+            <ul>
+              <li><strong>Dark traits:</strong> higher scores are reflective signals, not labels. Focus on behavioural triggers and safeguards.</li>
+              <li><strong>Light traits:</strong> higher scores indicate self-reported strengths. Lower areas can guide development priorities.</li>
+              <li><strong>Mixed profiles are normal:</strong> people can show both risk tendencies and ethical strengths depending on context.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Safe use principles</h3>
+            <ul>
+              <li>Do not share your scores if you feel pressured.</li>
+              <li>Do not use scores to judge colleagues.</li>
+              <li>Use GenAI advice as suggestions only.</li>
+              <li>Seek appropriate support if the exercise causes distress.</li>
+            </ul>
+          </div>
+        </div>
+
+        <label for="aiPrompt" class="prompt-label">Structured GenAI prompt</label>
+        <textarea id="aiPrompt" class="prompt-box" rows="18" readonly></textarea>
+        <div class="action-bar">
+          <button id="copyPromptBtn" class="primary">Copy AI prompt</button>
+          <a class="secondary link-button" href="https://chat.openai.com/" target="_blank" rel="noopener">Open ChatGPT</a>
+          <a class="secondary link-button" href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Open Copilot</a>
+          <button id="downloadReportBtn" class="secondary">Download report JSON</button>
+        </div>
+        <div id="resultsStatus" class="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="post" class="panel" tabindex="0">
+      <div class="panel-head">
+        <div>
+          <h2>4. Post‑Survey: Perceived change after 2–4 weeks</h2>
+          <p>Complete this after you have followed your AI-assisted development plan for 2–4 weeks. Your answers remain local unless you export them.</p>
+        </div>
+        <button class="secondary" data-fill="post">Demo fill</button>
+      </div>
+      <form id="postForm" class="question-form"></form>
+      <div class="action-bar">
+        <button id="savePostBtn" class="primary">Save post‑survey locally</button>
+        <button id="compareBtn" class="secondary">Show pre/post comparison</button>
+        <button id="exportPostBtn" class="secondary">Download post‑survey JSON</button>
+      </div>
+      <div id="postComparison" class="comparison hidden"></div>
+      <div id="postStatus" class="status" aria-live="polite"></div>
+    </section>
+
+    <section id="researcher" class="panel" tabindex="0">
+      <h2>Researcher Export</h2>
+      <p>This page creates an anonymous participant summary that can be downloaded or copied into an approved survey/data collection system. This app itself does not send the data anywhere.</p>
+      <div class="action-bar">
+        <button id="copySummaryBtn" class="primary">Copy anonymous summary</button>
+        <button id="downloadSummaryBtn" class="secondary">Download anonymous summary JSON</button>
+        <button id="downloadCsvBtn" class="secondary">Download summary CSV</button>
+      </div>
+      <textarea id="summaryBox" class="prompt-box" rows="16" readonly></textarea>
+      <div id="researcherStatus" class="status" aria-live="polite"></div>
+
+      <h3>Participant debrief</h3>
+      <div class="notice">
+        This exercise is intended for self-reflection. If any question or AI suggestion causes distress, pause the exercise and seek support from an appropriate wellbeing service, GP, employee assistance programme, trusted colleague, or manager. Do not act on AI advice that feels unsafe, retaliatory, discriminatory, or inconsistent with workplace policy.
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong>Built as a static page for GitHub Pages. No data is sent anywhere; everything runs in your browser.</strong></p>
+      <p><strong>Questionnaire copyright notice:</strong> This prototype does not reproduce copyrighted questionnaire items from SD3, SD4, Dirty Dozen, Interpersonal Reactivity Index, Ethical Leadership Scale, Expressed Humility Scale, or related instruments. The items in this app are original, framework-informed prompts for educational research and self-reflection only. If you replace them with validated questionnaire items, obtain permissions and cite the respective scale owners/publications.</p>
+      <p>Code copyrighted by Dr Somdip Dey, Regent European University / Regent Global.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
