@@ -127,6 +127,9 @@ h3 { margin-top: 0; }
 .scale input { display: block; margin: 0 auto 4px; }
 .scale label:has(input:checked) { border-color: var(--primary); background: #eef5ff; }
 .action-bar { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0 8px; }
+.chart-actions { margin-top: 12px; }
+.scoring-note h3, .rationale-card h3 { margin-bottom: 8px; }
+code { background: #f2f5f9; border: 1px solid var(--line); border-radius: 6px; padding: 1px 5px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .status { min-height: 24px; color: var(--primary-dark); font-weight: 700; margin-top: 8px; }
 .hidden { display: none !important; }
 

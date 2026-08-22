@@ -135,11 +135,24 @@
           <div class="chart-card">
             <h3>Dark Tetrad reflective signals</h3>
             <canvas id="darkChart" width="720" height="360" role="img" aria-label="Dark Tetrad score chart"></canvas>
+            <div class="action-bar chart-actions">
+              <button id="downloadDarkChartBtn" class="secondary small">Download dark chart PNG</button>
+            </div>
           </div>
           <div class="chart-card">
             <h3>Light / ethical leadership capacities</h3>
             <canvas id="lightChart" width="720" height="360" role="img" aria-label="Light and ethical leadership score chart"></canvas>
+            <div class="action-bar chart-actions">
+              <button id="downloadLightChartBtn" class="secondary small">Download light chart PNG</button>
+            </div>
           </div>
+        </div>
+
+        <div class="notice info scoring-note">
+          <h3>How the scores are calculated</h3>
+          <p>Each trait or capacity is assessed using <strong>seven original framework-informed items</strong>. Each item is answered on a 1–5 agreement scale. For each trait, the seven item scores are averaged and converted to a 0–100 score using: <code>((mean - 1) / 4) × 100</code>, rounded to the nearest whole number.</p>
+          <p><strong>Equal weighting:</strong> within each trait, every item contributes one seventh of the trait score (approximately <strong>14.29%</strong>). Reverse-scored items are first converted using <code>6 - response</code>, so that higher final values consistently reflect a stronger reflective signal for dark traits or a stronger reported capacity for light/ethical leadership traits.</p>
+          <p>This equal-weighted scoring is intentionally transparent and avoids hidden algorithmic weighting. It is appropriate for a self-reflection and improvement tool where the items are original and framework-informed; future peer-reviewed validation can test reliability, factor structure, sensitivity to change, and whether different weights are empirically justified.</p>
         </div>
 
         <div class="two-col">
@@ -185,6 +198,20 @@
       <div class="notice">
         <strong>Transparency note:</strong> The mapping explains how each item contributes to a reflective trait signal or leadership capacity. Some items are reverse-scored because agreement indicates a protective behaviour rather than a risk tendency.
       </div>
+
+      <div class="card rationale-card">
+        <h3>Why these 49 items?</h3>
+        <p>LeaderLens AI uses <strong>49 items</strong>: seven items for each of seven dimensions (narcissism, Machiavellianism, psychopathy, sadism, empathy, humility, and ethical leadership). This structure was selected to balance <strong>construct coverage</strong>, <strong>participant burden</strong>, and <strong>practical usefulness</strong>. A much longer questionnaire could capture more nuance, but it may reduce completion quality and discourage honest reflection; a shorter tool would be easier to complete but could underrepresent important workplace behaviours.</p>
+        <p>The item pool was not cherry-picked from copyrighted scales. Instead, each item was written as an <strong>original workplace-relevant behavioural prompt</strong> mapped to established constructs from the Dark Triad, SD3, SD4/Dark Tetrad, workplace mistreatment, Light vs Dark Triad, ethical leadership, empathy, and expressed humility literatures. Each dimension includes a mix of direct behavioural indicators and reverse-scored protective behaviours so the tool can capture both risk signals and safeguards.</p>
+        <p>For scoring transparency, all seven items within a dimension have equal weight: each contributes approximately <strong>14.29%</strong> of that dimension’s score. Equal weighting is used because the current version is a transparent self-reflection tool rather than a psychometrically reweighted clinical or selection instrument. The effectiveness and measurement properties of this 49-item structure should be evaluated through future peer-reviewed validation using the separate pre/post survey process.</p>
+      </div>
+
+      <div class="card rationale-card">
+        <h3>Scoring method and weighting</h3>
+        <p>Responses use a 1–5 agreement scale. Reverse-scored items are converted using <code>6 - response</code>. For each trait, the seven adjusted item scores are averaged, then converted to a 0–100 score using <code>((mean - 1) / 4) × 100</code>. This means a trait score reflects the participant’s average response pattern for that construct, not a diagnosis or fixed personality label.</p>
+        <p>The 0–100 format is used because it is easier for users to interpret than raw scale means. The score bands are intentionally cautious: dark-trait scores are described as <em>lower</em>, <em>moderate</em>, or <em>elevated reflective signals</em>; light/ethical leadership scores are described as <em>development priority</em>, <em>emerging capacity</em>, or <em>reported strength</em>.</p>
+      </div>
+
       <div id="mappingList" class="mapping-list"></div>
     </section>
 

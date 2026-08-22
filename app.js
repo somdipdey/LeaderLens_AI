@@ -140,6 +140,19 @@ const dimensionOrder = {
   light: ['Empathy', 'Humility', 'Ethical Leadership']
 };
 
+const ITEMS_PER_DIMENSION = 7;
+const ITEM_WEIGHT_PERCENT = Number((100 / ITEMS_PER_DIMENSION).toFixed(2));
+
+const scoringMethod = {
+  responseScale: '1 to 5 agreement scale',
+  itemsPerDimension: ITEMS_PER_DIMENSION,
+  itemWeightWithinDimension: `${ITEM_WEIGHT_PERCENT}%`,
+  reverseScoring: 'For reverse-scored items, adjusted score = 6 - response.',
+  dimensionFormula: 'dimensionScore0to100 = round(((meanAdjustedItemScore - 1) / 4) * 100)',
+  interpretationBoundary: 'Scores are reflective indicators for self-development, not diagnostic categories or validated selection scores.',
+  validationNote: 'The 49-item structure is original and framework-informed; future peer-reviewed validation should test reliability, factor structure, sensitivity to change, and whether different empirical weights are justified.'
+};
+
 const darkAdvice = {
   Narcissism: 'Focus on feedback tolerance, shared credit, and separating self-worth from recognition.',
   Machiavellianism: 'Focus on transparent communication, fair information sharing, and ethical influence boundaries.',
@@ -441,7 +454,7 @@ function buildAIPrompt() {
     return `- ${dim}: ${s.percent}/100 (${s.band}). Development focus: ${lightAdvice[dim]}`;
   }).join('\n');
 
-  return `You are helping me reflect on my workplace behaviour and leadership style. Please act as a cautious, ethical, non-clinical development coach.\n\nImportant boundaries:\n- Do not diagnose me or label me as a narcissist, Machiavellian, psychopath, sadist, or unethical leader.\n- Treat these scores as self-reflection signals, not clinical or objective truth.\n- Prioritise psychological safety, workplace ethics, dignity, and low-risk behaviour experiments.\n- Do not recommend confrontation, retaliation, manipulation, surveillance, or anything that could breach workplace policy.\n- If a situation involves bullying, harassment, discrimination, self-harm, or risk to others, advise me to seek appropriate formal support rather than handling it alone.\n\nMy anonymous LeaderLens AI study code is ${getCode()} if I need to use it in a separate survey.\n\nMy Dark Tetrad reflective signals are:\n${darkLines}\n\nMy light / ethical leadership capacities are:\n${lightLines}\n\nPlease provide:\n1. A balanced interpretation of what this profile might suggest about my leadership style, biases, and workplace triggers.\n2. The top 3 behavioural risks I should monitor, written in non-stigmatising language.\n3. The top 3 strengths or protective capacities I can build on.\n4. A practical 2–4 week improvement plan with weekly micro-experiments, reflection questions, and observable workplace behaviours.\n5. Short scripts for seeking feedback, pausing before reactive decisions, giving credit, and responding ethically to conflict.\n6. A final reminder about interpreting these results cautiously and respecting others’ privacy and dignity.`;
+  return `You are helping me reflect on my workplace behaviour and leadership style. Please act as a cautious, ethical, non-clinical development coach.\n\nImportant boundaries:\n- Do not diagnose me or label me as a narcissist, Machiavellian, psychopath, sadist, or unethical leader.\n- Treat these scores as self-reflection signals, not clinical or objective truth.\n- Prioritise psychological safety, workplace ethics, dignity, and low-risk behaviour experiments.\n- Do not recommend confrontation, retaliation, manipulation, surveillance, or anything that could breach workplace policy.\n- If a situation involves bullying, harassment, discrimination, self-harm, or risk to others, advise me to seek appropriate formal support rather than handling it alone.\n\nMy anonymous LeaderLens AI study code is ${getCode()} if I need to use it in a separate survey.\n\nMy Dark Tetrad reflective signals are:\n${darkLines}\n\nMy light / ethical leadership capacities are:\n${lightLines}\n\nScoring note: each trait/capacity score is calculated from seven equally weighted items, converted to a 0–100 reflective score. Please interpret cautiously and developmentally.\n\nPlease provide:\n1. A balanced interpretation of what this profile might suggest about my leadership style, biases, and workplace triggers.\n2. The top 3 behavioural risks I should monitor, written in non-stigmatising language.\n3. The top 3 strengths or protective capacities I can build on.\n4. A practical 2–4 week improvement plan with weekly micro-experiments, reflection questions, and observable workplace behaviours.\n5. Short scripts for seeking feedback, pausing before reactive decisions, giving credit, and responding ethically to conflict.\n6. A final reminder about interpreting these results cautiously and respecting others’ privacy and dignity.`;
 }
 
 function getFullSummary() {
@@ -450,6 +463,13 @@ function getFullSummary() {
     participantCode: getCode(),
     exportedAt: new Date().toISOString(),
     privacyNote: 'Generated locally in browser. User controls whether to share/export.',
+    scoringMethod,
+    itemStructure: {
+      totalItems: assessmentItems.length,
+      dimensions: [...dimensionOrder.dark, ...dimensionOrder.light],
+      itemsPerDimension: ITEMS_PER_DIMENSION,
+      equalItemWeightWithinDimension: `${ITEM_WEIGHT_PERCENT}%`
+    },
     selfAssessment: assessment ? {
       timestamp: assessment.timestamp,
       scores: assessment.scores
@@ -501,6 +521,29 @@ function downloadBlob(filename, blob) {
   URL.revokeObjectURL(url);
 }
 
+function downloadCanvas(canvasId, filename, statusId) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return setStatus(statusId, 'Chart could not be found.', true);
+  const assessment = loadJson(STORAGE_KEYS.assessment);
+  if (!assessment) return setStatus(statusId, 'Complete the self-assessment before downloading chart images.', true);
+  if (canvas.toBlob) {
+    canvas.toBlob((blob) => {
+      if (!blob) return setStatus(statusId, 'Chart download failed. Please try again.', true);
+      downloadBlob(filename, blob);
+      setStatus(statusId, 'Chart image downloaded.');
+    }, 'image/png');
+  } else {
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setStatus(statusId, 'Chart image downloaded.');
+  }
+}
+
 async function copyText(text, statusId, message) {
   try {
     await navigator.clipboard.writeText(text);
@@ -538,6 +581,7 @@ function renderMapping() {
         <span class="mapping-dimension">${escapeHtml(item.dimension)}${item.reverse ? ' (reverse-scored)' : ''}</span>
       </div>
       <p><strong>Item:</strong> ${escapeHtml(item.text)}</p>
+      <p><strong>Scoring role:</strong> ${item.reverse ? 'Reverse-scored protective item. Agreement lowers the relevant risk signal or strengthens the relevant capacity after conversion.' : 'Direct-scored item. Agreement increases the relevant reflective signal or reported capacity.'} Each item contributes approximately ${ITEM_WEIGHT_PERCENT}% of its own dimension score.</p>
       <p><strong>Justification:</strong> ${escapeHtml(item.rationale)}</p>
       <p class="source-links"><strong>Research basis:</strong> ${sources}</p>
     `;
@@ -598,6 +642,8 @@ function bindEvents() {
   });
 
   document.getElementById('downloadReportBtn').addEventListener('click', () => exportJson(`leaderlens-report-${getCode()}.json`, getFullSummary()));
+  document.getElementById('downloadDarkChartBtn').addEventListener('click', () => downloadCanvas('darkChart', `leaderlens-dark-tetrad-chart-${getCode()}.png`, 'resultsStatus'));
+  document.getElementById('downloadLightChartBtn').addEventListener('click', () => downloadCanvas('lightChart', `leaderlens-light-leadership-chart-${getCode()}.png`, 'resultsStatus'));
   document.getElementById('copyPromptBtn').addEventListener('click', () => copyText(document.getElementById('aiPrompt').value, 'resultsStatus', 'Prompt copied. Paste it into your chosen GenAI assistant.'));
   document.getElementById('openChatGPTBtn').addEventListener('click', () => copyPromptAndOpen('https://chatgpt.com/', 'ChatGPT'));
   document.getElementById('openCopilotBtn').addEventListener('click', () => copyPromptAndOpen('https://copilot.microsoft.com/', 'Copilot'));

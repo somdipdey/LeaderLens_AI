@@ -9,9 +9,10 @@ LeaderLens AI helps individuals reflect on workplace behaviour and leadership st
 1. Generate or copy an anonymous study code for any separate pre/post survey process.
 2. Complete a browser-side self-assessment of Dark Tetrad reflective signals and light / ethical leadership capacities.
 3. View two score dashboards: dark signals to manage and prosocial capacities to strengthen.
-4. Copy a structured GenAI prompt into ChatGPT, Copilot, Gemini, Claude, or another preferred GenAI assistant.
-5. Use the AI output as a non-diagnostic, safety-oriented 2–4 week development plan.
-6. Export an anonymous local summary only if the user chooses to share it through an approved survey or research process.
+4. Download the dark and light profile charts as PNG images for personal records or approved research/survey workflows.
+5. Copy a structured GenAI prompt into ChatGPT, Copilot, Gemini, Claude, or another preferred GenAI assistant.
+6. Use the AI output as a non-diagnostic, safety-oriented 2–4 week development plan.
+7. Export an anonymous local summary only if the user chooses to share it through an approved survey or research process.
 
 ## Privacy design
 
@@ -28,6 +29,20 @@ LeaderLens AI helps individuals reflect on workplace behaviour and leadership st
 This app is not a clinical, diagnostic, recruitment, performance-management, or disciplinary tool. Scores are self-reflection indicators only. Use them to guide self-learning, leadership development, and behaviour improvement; do not use them to label yourself or others.
 
 The included questionnaire items are original, framework-informed prompts. They do not reproduce copyrighted scale items from SD3, SD4, Dirty Dozen, Interpersonal Reactivity Index, Ethical Leadership Scale, Expressed Humility Scale, or related instruments. The underlying scientific scales, frameworks, and publications belong to their respective authors, publishers, and rights holders.
+
+## Item selection and scoring transparency
+
+LeaderLens AI uses 49 original framework-informed items: seven items for each of seven dimensions (narcissism, Machiavellianism, psychopathy, sadism, empathy, humility, and ethical leadership). Seven items per dimension were selected to balance construct coverage with participant burden. A longer instrument could capture more nuance but may reduce completion quality; a shorter instrument could be easier to complete but may underrepresent key workplace behaviours.
+
+The app does not copy copyrighted questionnaire items. Each prompt is written as an original workplace-relevant behavioural statement and mapped transparently to the research basis in the app's Question Mapping section.
+
+Scores are calculated by averaging seven adjusted item responses per dimension, then converting the mean to a 0–100 score using:
+
+```text
+((mean - 1) / 4) × 100
+```
+
+Reverse-scored items are first converted using `6 - response`. Every item within a dimension has equal weight, so each contributes approximately 14.29% of that dimension score. Equal weighting is used to keep the tool transparent and avoid hidden algorithmic weighting. Future peer-reviewed validation should test reliability, factor structure, sensitivity to change, and whether different empirical weights are justified.
 
 ## Research basis
 
